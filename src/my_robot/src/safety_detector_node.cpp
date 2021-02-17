@@ -7,6 +7,9 @@
 int height {1}; //from the center of the robot 
 int width {2}; //half on right and half on left side of the robot
 
+int cnt=0;
+
+
 //robot drive command publisher
 ros::Publisher drive_pub;
 
@@ -16,12 +19,13 @@ ros::Publisher drive_pub;
 void Move(bool command){    
     geometry_msgs::Twist data;
     
-    if (command){
-        data.linear.x = 0.1; //drive robot at constant 0.1 m/s speed
+    if (!command){
+        data.linear.x = 0.05; //drive robot at constant 0.1 m/s speed
     }
     else{
         data.linear.x = 0.0; //stop robot
         ROS_INFO("OBSTACLE DETECTED, STOP!!!");
+        ros::Duration(5).sleep(); // sleep for 5 seconds
     }
     
     //publish data on cmd_vel topic
@@ -36,8 +40,10 @@ void Safety_check(const sensor_msgs::LaserScan msg)
   ROS_INFO("Front object distance [%f] \n", msg.ranges[359]);
   ROS_INFO("Right object distance [%f] \n", msg.ranges[0]);
   ROS_INFO("Left object distance [%f] \n", msg.ranges[719]);
-  ROS_INFO("\n");
-
+  ROS_INFO("Counter: [%d]\n", cnt);
+  cnt+=1;
+  bool is_obstacle = false;
+  
   //laser scan sensor sampling resolution
   double y1 = (width/2)/(msg.ranges.size()/2);
   
@@ -48,10 +54,21 @@ void Safety_check(const sensor_msgs::LaserScan msg)
       //consider -ve slope line
       if (i < (msg.ranges.size()/2)){
           if (msg.ranges[i] < (1 - y1*i)){
-              Move(false);
+              ROS_INFO("scan data value [%f] \n", msg.ranges[i]);
+              ROS_INFO("line eq value [%f] \n", (1 - y1*i));
+            //   ros::Duration(3).sleep(); // sleep for 5 seconds
+            //   Move(false);
+              ROS_INFO("IN LOOPPPPPPPPPPPPP  --> OBSTACLE DETECTED RIGHT SIDE, STOP!!!");
+            //   ros::Duration(3).sleep(); // sleep for 5 seconds
+              is_obstacle = true;
           }
           else{
-              Move(true);
+              ROS_INFO("IN LOOPPPPPPPPPPPPP 0 to 90 degree");
+              ROS_INFO("scan data value [%f] \n", msg.ranges[i]);
+              ROS_INFO("line eq value [%f] \n", (1 - y1*i));
+            //   ros::Duration(1).sleep(); // sleep for 5 seconds
+            //   Move(true);
+              is_obstacle = false;
           } 
       }
 
@@ -59,13 +76,25 @@ void Safety_check(const sensor_msgs::LaserScan msg)
       //consider +ve slope line
       else{
           if (msg.ranges[i] < (y1*i)){
-              Move(false);
+              ROS_INFO("scan data value [%f] \n", msg.ranges[i]);
+              ROS_INFO("line eq value [%f] \n", (y1*i));
+            //   Move(false);
+              ROS_INFO("IN LOOPPPPPPPPPPPPP 90 to 180 degree --> OBSTACLE DETECTED LEFT SIDE, STOP!!!");
+            //   ros::Duration(3).sleep(); // sleep for 5 seconds
+              is_obstacle = true;
           }
           else{
-              Move(true);
+              ROS_INFO("IN LOOPPPPPPPPPPPPP 90 to 180 degree");
+              ROS_INFO("scan data value [%f] \n", msg.ranges[i]);
+              ROS_INFO("line eq value [%f] \n", (y1*i));
+            //   ros::Duration(1).sleep(); // sleep for 5 seconds
+            //   Move(true);
+              is_obstacle = false;
           }
       }
   }
+
+  Move(is_obstacle);
 }
 
 
