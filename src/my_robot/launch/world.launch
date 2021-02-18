@@ -4,7 +4,7 @@
   <!-- Robot pose -->
   <arg name="x" default="0.0"/>
   <arg name="y" default="0.0"/>
-  <arg name="z" default="0.099"/>
+  <arg name="z" default="0.0"/>
   <arg name="roll" default="0"/>
   <arg name="pitch" default="0"/>
   <arg name="yaw" default="0"/>
@@ -23,12 +23,8 @@
     <arg name="world_name" value="$(arg world_file)"/>
   </include>
 
-  <!-- Find my robot Description-->
-  <!-- <param name="robot_description" command="$(find xacro)/xacro #add two hyphens here#inorder '$(find my_robot)/urdf/my_robot.xacro'"/> -->
-
   <!--launch rviz-->
   <!-- <node name="rviz" pkg="rviz" type="rviz" args="-d $(find ball_chaser)/rviz/rviz_config.rviz" respawn="false"/> -->
-
 
   <!-- Spawn My Robot -->
   <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
