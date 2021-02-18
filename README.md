@@ -1,5 +1,9 @@
 # Safety_detector_robot
 
+## Output:
+
+![output_gif](https://github.com/kvnptl/safety_detector_robot/blob/main/results/obstacle_detector_demo.gif)
+
 Here, I am using linear equations to make a shield around the robot for obstacle detection.
 
 I am considering +ve slope slope line and -ve slope line for making it as a triangle.
@@ -15,6 +19,7 @@ Code: Using For loop to check data from peak to the bottom (as shown by the arra
 
 ![algo](https://github.com/kvnptl/safety_detector_robot/blob/main/results/logic_overview.png)
 
-## Output:
+## How to run:
 
-![output_gif](https://github.com/kvnptl/safety_detector_robot/blob/main/results/obstacle_detector_demo.gif)
+1. Terminal 1: `roslaunch my_robot world.launch`
+2. Terminal 2: `roslaunch my_robot safety_detector.launch`
