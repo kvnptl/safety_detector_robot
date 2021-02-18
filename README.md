@@ -11,7 +11,7 @@ Here, I am using linear equations to make a shield around the robot for obstacle
 
 I am considering the +ve slope line and -ve slope line for making it a triangle.
 
-Code: Using For loop to check data from peak to the bottom (as shown by the array in the figure)4
+Code: Using For loop to check data from peak to the bottom (as shown by the array in the figure)
 
 ![algo](https://github.com/kvnptl/safety_detector_robot/blob/main/results/logic_overview.png)
 
