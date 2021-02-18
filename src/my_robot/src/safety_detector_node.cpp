@@ -66,6 +66,14 @@ void Safety_check(const sensor_msgs::LaserScan msg)
         //line equation x = (y - c) / m;
         x = (y2 - (vertical_resolution * (half_len - 1 - i))) / (m); //making this equation +ve all the time (absolute)
 
+
+        //front side obstacle
+        if (msg.ranges[half_len-1] < height){
+            is_obstacle = true;
+            ROS_INFO("OBSTACLE ON FRONT SIDE");
+            break;
+        }
+                
         //from 0 to 90 degree
         //consider -ve slope line
         if (msg.ranges[half_len - 1 - i] < x)
@@ -80,13 +88,6 @@ void Safety_check(const sensor_msgs::LaserScan msg)
         {
             is_obstacle = true;
             ROS_INFO("OBSTACLE ON LEFT SIDE");
-            break;
-        }
-
-        //front side obstacle
-        if (msg.ranges[half_len-1] < height){
-            is_obstacle = true;
-            ROS_INFO("OBSTACLE ON FRONT SIDE");
             break;
         }
 
