@@ -3,8 +3,8 @@
 #include "sensor_msgs/LaserScan.h"
 
 // safety shied dimentions around the robot
-int height{1}; //from the center of the robot towards front side
-int width{2};  //half on right and half on left side of the robot
+double height{1}; //from the center of the robot towards front side
+double width{2};  //half on right and half on left side of the robot
 
 //line equation variables; y = mx + c
 double x1 = width / 2;
@@ -80,6 +80,13 @@ void Safety_check(const sensor_msgs::LaserScan msg)
         {
             is_obstacle = true;
             ROS_INFO("OBSTACLE ON LEFT SIDE");
+            break;
+        }
+
+        //front side obstacle
+        if (msg.ranges[half_len-1] < height){
+            is_obstacle = true;
+            ROS_INFO("OBSTACLE ON FRONT SIDE");
             break;
         }
 
