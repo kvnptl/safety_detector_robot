@@ -3,13 +3,13 @@
 #include "sensor_msgs/LaserScan.h"
 
 // safety shied dimentions around the robot
-int height{1}; //from the center of the robot
+int height{1}; //from the center of the robot towards front side
 int width{2};  //half on right and half on left side of the robot
 
-//line equation variables
+//line equation variables; y = mx + c
 double x1 = width / 2;
 double y2 = height;
-double m = (y2 / x1);
+double m = (y2 / x1); //slope
 
 //robot drive command publisher
 ros::Publisher drive_pub;
@@ -28,7 +28,7 @@ void Move(bool command)
     else
     {
         data.linear.x = 0.0; //stop robot
-        ROS_INFO("OBSTACLE DETECTED, STOP!!!");
+        ROS_INFO("OBSTACLE AHEAD, STOP!!!");
         // ros::Duration(5).sleep(); // sleep for 5 seconds
     }
 
@@ -41,25 +41,27 @@ void Move(bool command)
 // output: none
 void Safety_check(const sensor_msgs::LaserScan msg)
 {
+    //check if obstacle present or not
     bool is_obstacle = false;
-    double len = sizeof(msg.ranges) / sizeof(msg.ranges[0]);
+    
+    //laser scan data points size
+    double len = sizeof(msg.ranges) / sizeof(msg.ranges[0]); 
     len = 720.0;
     int half_len = len / 2;
     // ROS_INFO("Max ranges: [%f]\n", len);
+    
     //laser scan sensor sampling resolution
     double vertical_resolution = height / half_len;
+     // ROS_INFO("Sample resolution: [%f]\n", vertical_resolution);
 
-    double x;
-
-    // double side = width / 2;
-    // ROS_INFO("Sample resolution: [%f]\n", y1);
-    // ros::Duration(5).sleep(); // sleep for 5 seconds
+    //x-axis as width of the robot shield
+    double x; 
 
     //laser scan sensor collects data from 0 to 180 degree
     for (int i = 0; i < half_len; i++)
     {
         //line equation x = (y - c) / m;
-        x = (y2 - (vertical_resolution * (half_len - 1 - i))) / (m);
+        x = (y2 - (vertical_resolution * (half_len - 1 - i))) / (m); //making this equation +ve all the time
 
         //from 0 to 90 degree
         //consider -ve slope line
@@ -78,17 +80,14 @@ void Safety_check(const sensor_msgs::LaserScan msg)
             break;
         }
 
-        if (msg.ranges[half_len] < height)
-        {
-            is_obstacle = true;
-            break;
-        }
-
+        //no obstacle detected on laser data
         else
         {
             is_obstacle = false;
         }
     }
+
+    //send drive command to robot
     Move(is_obstacle);
 }
 
@@ -107,7 +106,7 @@ int main(int argc, char **argv)
 
     //subscriber: subscribe to hokuyu laser scan data
     //buffer/queue size 100
-    ros::Subscriber laser_data = n.subscribe("scan", 1, Safety_check);
+    ros::Subscriber laser_data = n.subscribe("scan", 100, Safety_check);
 
     ros::spin();
 
