@@ -31,8 +31,6 @@ void Move(bool command)
         ROS_INFO("OBSTACLE AHEAD, STOP!!!");
 
         //change path
-        
-        // ros::Duration(5).sleep(); // sleep for 5 seconds
     }
 
     //publish data on cmd_vel topic
