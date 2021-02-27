@@ -2,7 +2,9 @@
 
 ## Output:
 
-<img src="https://github.com/kvnptl/safety_detector_robot/blob/main/results/obstacle_detector_demo.gif" width="1080" height="600"/>
+<p align="center">
+<img src="https://github.com/kvnptl/safety_detector_robot/blob/main/results/obstacle_detector_demo.gif" width="1080" height="500"/>
+</p>
 
 Here, I am using linear equations to make a shield around the robot for obstacle detection.
 
