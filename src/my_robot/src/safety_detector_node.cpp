@@ -65,7 +65,7 @@ void Safety_check(const sensor_msgs::LaserScan::ConstPtr& msg)
     //x-axis as width of the robot shield
     double x; 
 
-    //laser scan sensor collects data from 0 to 180 degree
+    //laser scan sensor collects data from -90° to +90°
     for (size_t i = 0; i < half_len; i++)
     {
         //line equation x = (y - c) / m;
