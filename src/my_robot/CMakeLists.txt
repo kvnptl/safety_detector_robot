@@ -210,3 +210,8 @@ include_directories(include ${catkin_INCLUDE_DIRS})
 add_executable(safety_detector_node src/safety_detector_node.cpp)
 target_link_libraries(safety_detector_node ${catkin_LIBRARIES})
 
+catkin_add_gtest(safety_detector_node_test test/safety_detector_node_test.cpp)
+if(TARGET safety_detector_node_test)
+  target_link_libraries(safety_detector_node_test ${catkin_LIBRARIES})
+endif()
+
