@@ -73,7 +73,8 @@ void Safety_check(const sensor_msgs::LaserScan::ConstPtr& msg)
 
 
         //front side obstacle
-        if (msg->ranges[half_len-1] < height){
+        if (half_len < msg->ranges.size() && msg->ranges[half_len] < height)
+        {
             is_obstacle = true;
             ROS_INFO("OBSTACLE ON FRONT SIDE");
             break;
