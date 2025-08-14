@@ -40,35 +40,40 @@ void Move(bool command)
 //Safety_check function: check if obstacle within a certain range
 // input: Laser scan data
 // output: none
-void Safety_check(const sensor_msgs::LaserScan msg)
+void Safety_check(const sensor_msgs::LaserScan::ConstPtr& msg)
 {
+    if (msg->ranges.empty())
+    {
+        return;
+    }
+
     //check if obstacle present or not
     bool is_obstacle = false;
-    
+
     //laser scan data points size (default values are start: -1.57 to stop: 1.57 with resolution of 0.00436111, total 720 points)
-    double len = msg.ranges.size();
-    int half_len = len / 2;
+    size_t len = msg->ranges.size();
+    size_t half_len = len / 2;
     
     //Debug
     // ROS_INFO("Max ranges: [%f]\n", len);
     // ros::Duration(8).sleep(); // sleep for 8 seconds
     
     //laser scan sensor sampling resolution
-    double vertical_resolution = height / half_len;
+    double vertical_resolution = height / static_cast<double>(half_len);
      // ROS_INFO("Sample resolution: [%f]\n", vertical_resolution);
 
     //x-axis as width of the robot shield
     double x; 
 
     //laser scan sensor collects data from 0 to 180 degree
-    for (int i = 0; i < half_len; i++)
+    for (size_t i = 0; i < half_len; i++)
     {
         //line equation x = (y - c) / m;
         x = (y2 - (vertical_resolution * (half_len - 1 - i))) / (m); //making this equation +ve all the time (absolute)
 
 
         //front side obstacle
-        if (msg.ranges[half_len-1] < height){
+        if (msg->ranges[half_len-1] < height){
             is_obstacle = true;
             ROS_INFO("OBSTACLE ON FRONT SIDE");
             break;
@@ -76,7 +81,7 @@ void Safety_check(const sensor_msgs::LaserScan msg)
                 
         //from 0 to 90 degree
         //consider -ve slope line
-        if (msg.ranges[half_len - 1 - i] < x)
+        if (msg->ranges[half_len - 1 - i] < x)
         {
             is_obstacle = true;
             ROS_INFO("OBSTACLE ON RIGHT SIDE");
@@ -84,7 +89,7 @@ void Safety_check(const sensor_msgs::LaserScan msg)
         }
         //from 90 to 180 degree
         //consider +ve slope line
-        if (msg.ranges[half_len + i] < x)
+        if (msg->ranges[half_len + i] < x)
         {
             is_obstacle = true;
             ROS_INFO("OBSTACLE ON LEFT SIDE");
